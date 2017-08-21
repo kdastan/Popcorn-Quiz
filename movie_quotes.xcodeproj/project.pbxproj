@@ -13,6 +13,9 @@
 		1813A9E41F41F83800F2B6F4 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1813A9E31F41F83800F2B6F4 /* Assets.xcassets */; };
 		1813A9E71F41F83800F2B6F4 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1813A9E51F41F83800F2B6F4 /* LaunchScreen.storyboard */; };
 		18A788951F48343A00C26265 /* Model.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18A788941F48343A00C26265 /* Model.swift */; };
+		18A788971F49C22C00C26265 /* MenuViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18A788961F49C22C00C26265 /* MenuViewController.swift */; };
+		18A7889B1F4AA23700C26265 /* Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18A7889A1F4AA23700C26265 /* Extension.swift */; };
+		18A7889D1F4AA39000C26265 /* Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18A7889C1F4AA39000C26265 /* Helpers.swift */; };
 		21AB8735550D8AC4BAB0B1AF /* Pods_movie_quotes.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 91AD28C94CF945C1E359AA7F /* Pods_movie_quotes.framework */; };
 /* End PBXBuildFile section */
 
@@ -26,6 +29,9 @@
 		1813A9E61F41F83800F2B6F4 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		1813A9E81F41F83800F2B6F4 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		18A788941F48343A00C26265 /* Model.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Model.swift; sourceTree = "<group>"; };
+		18A788961F49C22C00C26265 /* MenuViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = MenuViewController.swift; path = ../MenuViewController.swift; sourceTree = "<group>"; };
+		18A7889A1F4AA23700C26265 /* Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Extension.swift; sourceTree = "<group>"; };
+		18A7889C1F4AA39000C26265 /* Helpers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Helpers.swift; sourceTree = "<group>"; };
 		4F3224A5882C4A8D701F49C1 /* Pods-movie_quotes.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-movie_quotes.release.xcconfig"; path = "Pods/Target Support Files/Pods-movie_quotes/Pods-movie_quotes.release.xcconfig"; sourceTree = "<group>"; };
 		91AD28C94CF945C1E359AA7F /* Pods_movie_quotes.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_movie_quotes.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -63,13 +69,16 @@
 		1813A9DB1F41F83800F2B6F4 /* movie_quotes */ = {
 			isa = PBXGroup;
 			children = (
-				1813A9DC1F41F83800F2B6F4 /* AppDelegate.swift */,
+				18A788961F49C22C00C26265 /* MenuViewController.swift */,
 				1813A9DE1F41F83800F2B6F4 /* ViewController.swift */,
+				1813A9DC1F41F83800F2B6F4 /* AppDelegate.swift */,
 				18A788941F48343A00C26265 /* Model.swift */,
 				1813A9E01F41F83800F2B6F4 /* Main.storyboard */,
 				1813A9E31F41F83800F2B6F4 /* Assets.xcassets */,
 				1813A9E51F41F83800F2B6F4 /* LaunchScreen.storyboard */,
 				1813A9E81F41F83800F2B6F4 /* Info.plist */,
+				18A7889A1F4AA23700C26265 /* Extension.swift */,
+				18A7889C1F4AA39000C26265 /* Helpers.swift */,
 			);
 			path = movie_quotes;
 			sourceTree = "<group>";
@@ -216,8 +225,11 @@
 			buildActionMask = 2147483647;
 			files = (
 				18A788951F48343A00C26265 /* Model.swift in Sources */,
+				18A7889D1F4AA39000C26265 /* Helpers.swift in Sources */,
 				1813A9DF1F41F83800F2B6F4 /* ViewController.swift in Sources */,
 				1813A9DD1F41F83800F2B6F4 /* AppDelegate.swift in Sources */,
+				18A7889B1F4AA23700C26265 /* Extension.swift in Sources */,
+				18A788971F49C22C00C26265 /* MenuViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -343,6 +355,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				DEVELOPMENT_TEAM = 59XSW437S5;
 				INFOPLIST_FILE = movie_quotes/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.3;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.kumardastan.movie-quotes";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -357,6 +370,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				DEVELOPMENT_TEAM = 59XSW437S5;
 				INFOPLIST_FILE = movie_quotes/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.3;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.kumardastan.movie-quotes";
 				PRODUCT_NAME = "$(TARGET_NAME)";
