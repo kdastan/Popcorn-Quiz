@@ -6,5 +6,12 @@
 //  Copyright © 2017 kumardastan. All rights reserved.
 //
 
-import Foundation
+import UIKit
+
+class Screen {
+
+    static let width = UIScreen.main.bounds.width
+    static let height = UIScreen.main.bounds.height
+    
+}
 

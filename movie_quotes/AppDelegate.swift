@@ -16,7 +16,19 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
+        cordinateAppFlow()
         return true
+    }
+    
+    func cordinateAppFlow() {
+    
+        window = UIWindow(frame: UIScreen.main.bounds)
+        
+        let rootViewController = UINavigationController(rootViewController: TempViewController())
+        //TempViewController
+    
+        window?.rootViewController = rootViewController
+        window?.makeKeyAndVisible()
     }
 
     func applicationWillResignActive(_ application: UIApplication) {

@@ -9,7 +9,17 @@
 			<key>isShown</key>
 			<false/>
 		</dict>
+		<key>EasyPeasy.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
 		<key>Pods-movie_quotes.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
+		<key>SVProgressHUD.xcscheme</key>
 		<dict>
 			<key>isShown</key>
 			<false/>
@@ -17,12 +27,22 @@
 	</dict>
 	<key>SuppressBuildableAutocreation</key>
 	<dict>
-		<key>5576F49EBC4570F3025760D9F63E15A5</key>
+		<key>2417D7BA86534C485BECC086213D83B0</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>6E3750801A33A6BFD606E5DE8468C603</key>
 		<dict>
 			<key>primary</key>
 			<true/>
 		</dict>
 		<key>88E9EC28B8B46C3631E6B242B50F4442</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>B5221EA08C01208C608AC6ECB17B9F2E</key>
 		<dict>
 			<key>primary</key>
 			<true/>

@@ -7,5 +7,7 @@ target 'movie_quotes' do
 
   # Pods for movie_quotes
   pod 'Alamofire', '~> 4.4'
+  pod 'SVProgressHUD'
+  pod "EasyPeasy"
 
 end

@@ -8,12 +8,13 @@
 
 import UIKit
 import Alamofire
-
+import SVProgressHUD
 
 class ViewController: UIViewController {
     
     var model: [Model] = []
     var i = 0
+    var score = 0
     
     var answers: [String] = []
     var realAnswer = ""
@@ -41,12 +42,17 @@ class ViewController: UIViewController {
     @IBOutlet weak var buttonC: UIButton!
     @IBOutlet weak var buttonD: UIButton!
     
+    @IBOutlet weak var scoreLabel: UILabel!
+    @IBOutlet weak var blurImageView: UIImageView!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         self.buttonSetup()
+        SVProgressHUD.show()
         fetch { (success) in
             self.questionSetup()
         }
+        
     }
     
     func fetch(completion: @escaping (Bool) -> ()) {
@@ -59,6 +65,13 @@ class ViewController: UIViewController {
         ]
         
         Alamofire.request(url, method: .post, parameters: nil, encoding: JSONEncoding.default, headers: headers).responseJSON { (response) in
+            
+            if response.error != nil {
+                SVProgressHUD.dismiss()
+                self.networkErrorAlert()
+                return
+            }
+            
             guard let json = response.result.value as? [Any] else {return}
             for i in 0..<json.count{
                 let item = json[i] as? [String: String]
@@ -69,11 +82,17 @@ class ViewController: UIViewController {
                 print("\(self.model[i].author!) \(self.model[i].quote!)")
             }
             completion(true)
+            SVProgressHUD.dismiss()
         }
         
        //self.model.removeAll()
       }
     
+    func networkErrorAlert() {
+        let alert = UIAlertController(title: "Error", message: "Bad internet connection", preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
+        self.present(alert, animated: true, completion: nil)
+    }
     
     
     func questionSetup() {
@@ -88,7 +107,6 @@ class ViewController: UIViewController {
             var varA = Int(arc4random_uniform(9))
             var answer = model[varA].author
             var asd = answers.contains(answer!)
-            //print(asd)
             if !answers.contains(answer!) {
                 answers.append(answer!)
                 count += 1
@@ -103,24 +121,44 @@ class ViewController: UIViewController {
     }
     
     func nextQuestion() {
+        score += 1
+        scoreLabel.text = String(score)
+        
         if i==9 {
-            
+            model.removeAll()
+            SVProgressHUD.show()
             fetch { (success) in
                 self.questionSetup()
             }
-            
-            i = 1
+            i = 0
+            return
         }
         i += 1
         questionSetup()
+    }
+    
+    func gameOverEffect() {
+    
+        let blur = UIBlurEffect(style: .light)
+        let blurView = UIVisualEffectView(effect: blur)
+        blurView.frame = UIScreen.main.bounds
+        blurImageView.addSubview(blurView)
+        
+        buttonA.isEnabled = false
+        buttonB.isEnabled = false
+        buttonC.isEnabled = false
+        buttonD.isEnabled = false
+        
         
     }
+    
     
     func variantPressed(buttonAnswer: String) {
         if buttonAnswer == realAnswer {
             print("Correct")
             nextQuestion()
         } else {
+            gameOverEffect()
             print("Not correct")
         }
     }
