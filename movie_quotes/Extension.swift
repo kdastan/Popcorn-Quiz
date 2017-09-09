@@ -21,6 +21,5 @@ extension Array {
 
 extension UIColor {
     static let buttonColor = UIColor(displayP3Red: 255/255, green: 133/255, blue: 0, alpha: 1)
-
 }
 

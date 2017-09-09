@@ -8,14 +8,15 @@
 
 import UIKit
 import EasyPeasy
-import Alamofire
 import SVProgressHUD
+import YLProgressBar
 
 class GameViewController: UIViewController {
     
     let buttonWidth = (Screen.width / 2) - 40
     
-    var model: [Model] = []
+    var list: [[String: String]]!
+    
     var i = 0
     var score = 0
     
@@ -51,6 +52,7 @@ class GameViewController: UIViewController {
         button.backgroundColor = .buttonColor
         button.layer.cornerRadius = 4
         button.addTarget(self, action: #selector(button1), for: .touchUpInside)
+        button.titleLabel?.adjustsFontSizeToFitWidth = true
         return button
     }()
     
@@ -58,6 +60,7 @@ class GameViewController: UIViewController {
         let button = UIButton()
         button.backgroundColor = .buttonColor
         button.layer.cornerRadius = 4
+        button.titleLabel?.adjustsFontSizeToFitWidth = true
         button.addTarget(self, action: #selector(button2), for: .touchUpInside)
         return button
     }()
@@ -66,6 +69,7 @@ class GameViewController: UIViewController {
         let button = UIButton()
         button.backgroundColor = .buttonColor
         button.layer.cornerRadius = 4
+        button.titleLabel?.adjustsFontSizeToFitWidth = true
         button.addTarget(self, action: #selector(button3), for: .touchUpInside)
         return button
     }()
@@ -74,6 +78,7 @@ class GameViewController: UIViewController {
         let button = UIButton()
         button.backgroundColor = .buttonColor
         button.layer.cornerRadius = 4
+        button.titleLabel?.adjustsFontSizeToFitWidth = true
         button.addTarget(self, action: #selector(button4), for: .touchUpInside)
         return button
     }()
@@ -91,6 +96,11 @@ class GameViewController: UIViewController {
         return score
     }()
     
+    lazy var progressBar: YLProgressBar = {
+        let progressBar = YLProgressBar()
+        return progressBar
+    }()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -98,16 +108,23 @@ class GameViewController: UIViewController {
         setupConstraint()
         
         SVProgressHUD.show()
-        fetch { (success) in
-            self.questionSetup()
-        }
-
+        
+        fetchFromFirebase(completion: {(result) in
+            SVProgressHUD.dismiss()
+            
+            guard let _ = result else {
+                self.networkErrorAlert()
+                return
+            }
+            
+            self.newQuestionSetup()
+        })
     }
     
     func setupViews() {
         edgesForExtendedLayout = []
         
-        [imageView, questionBackground, wheel, scoreLabel, label, buttonA, buttonB, buttonC, buttonD, blurImageView].forEach{
+        [imageView, questionBackground, wheel, scoreLabel, label, buttonA, buttonB, buttonC, buttonD, blurImageView, progressBar].forEach{
             view.addSubview($0)
         }
     }
@@ -180,6 +197,13 @@ class GameViewController: UIViewController {
             Width(buttonWidth),
             Height(Screen.height * 0.1)
         ]
+        
+        progressBar <- [
+            Top(0),
+            CenterX(0),
+            Width(Screen.width),
+            Height(10)
+        ]
     }
     
     func button1() {
@@ -208,72 +232,58 @@ class GameViewController: UIViewController {
         }
     }
     
-    func fetch(completion: @escaping (Bool) -> ()) {
-        
-        let url = "https://andruxnet-random-famous-quotes.p.mashape.com/?cat=movies&count=10"
-        
-        let headers = [
-            "X-Mashape-Key": "9UO47e8LvRmshhVE8LGgNL8ew6AWp1f4ImGjsn19NTPqzDbIZ0",
-            "Content-Type": "application/x-www-form-urlencoded"
-        ]
-        
-        Alamofire.request(url, method: .post, parameters: nil, encoding: JSONEncoding.default, headers: headers).responseJSON { (response) in
-            
-            if response.error != nil {
-                SVProgressHUD.dismiss()
-                self.networkErrorAlert()
-                return
-            }
-            
-            guard let json = response.result.value as? [Any] else {return}
-            for i in 0..<json.count{
-                let item = json[i] as? [String: String]
-                let author = item?["author"] as? String
-                let quote = item?["quote"] as? String
-                let object = Model(author: author!, quote: quote!)
-                self.model.append(object)
-                print("\(self.model[i].author!) \(self.model[i].quote!)")
-            }
-            completion(true)
-            SVProgressHUD.dismiss()
+    //MARK: Fetch quotes from fb
+    func fetchFromFirebase(completion: @escaping (Bool?) -> Void) {
+            Quotes.fetchQuotes { (list) in
+                guard let _ = list else {
+                    completion(nil)
+                    return
+                }
+                self.list = list
+                completion(true)
         }
-        
-        //self.model.removeAll()
     }
     
+    //MARK: Network connection error
     func networkErrorAlert() {
-        let alert = UIAlertController(title: "Error", message: "Bad internet connection", preferredStyle: .alert)
+        let alert = UIAlertController(title: "No Internet Connection", message: "Make sure your device is connected to the internet.", preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
         self.present(alert, animated: true, completion: nil)
     }
     
-    func questionSetup() {
-        
+    //MARK: Question setup
+    func newQuestionSetup() {
         answers.removeAll()
         
-        label.text = model[i].quote
-        var count = 0
-        realAnswer = model[i].author
+        var countAnswer = 0
+        let randomQuote = Int(arc4random_uniform(99))
+        
+        label.text = list[randomQuote]["Quote"]! + list[randomQuote]["Name"]!
+        realAnswer = list[randomQuote]["Name"]!
+        
         answers.append(realAnswer)
-        while count != 3 {
-            var varA = Int(arc4random_uniform(9))
-            var answer = model[varA].author
-            var asd = answers.contains(answer!)
-            if !answers.contains(answer!) {
-                answers.append(answer!)
-                count += 1
+        
+        while countAnswer != 3 {
+            let randomAnswer = Int(arc4random_uniform(99))
+            let answer = list[randomAnswer]["Name"]!
+            
+            if !answers.contains(answer) {
+                answers.append(answer)
+                countAnswer += 1
             }
         }
-        count = 0
+    
         answers.shuffle()
         buttonA.setTitle(answers[0], for: .normal)
         buttonB.setTitle(answers[1], for: .normal)
         buttonC.setTitle(answers[2], for: .normal)
         buttonD.setTitle(answers[3], for: .normal)
-    }
-
-    func gameOverEffect() {
         
+        countAnswer = 0
+    }
+    
+    //MARK: Game over effect
+    func gameOverEffect() {
         let blur = UIBlurEffect(style: .light)
         let blurView = UIVisualEffectView(effect: blur)
         blurView.frame = UIScreen.main.bounds
@@ -283,25 +293,16 @@ class GameViewController: UIViewController {
         buttonB.isEnabled = false
         buttonC.isEnabled = false
         buttonD.isEnabled = false
-        
-        
     }
     
     func nextQuestion() {
         score += 1
         scoreLabel.text = String(score)
         
-        if i==9 {
-            model.removeAll()
-            SVProgressHUD.show()
-            fetch { (success) in
-                self.questionSetup()
-            }
-            i = 0
-            return
-        }
+        //Reload Questions Here
+        
         i += 1
-        questionSetup()
+        newQuestionSetup()
     }
 
 }
