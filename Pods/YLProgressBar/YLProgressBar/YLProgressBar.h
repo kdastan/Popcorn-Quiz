@@ -44,7 +44,7 @@ typedef NS_ENUM (NSUInteger, YLProgressBarType)
   /**
    * The progress bar has squared corners and no gloss.
    */
-  YLProgressBarTypeFlat    = 1,
+  YLProgressBarTypeFlat = 1,
 };
 
 /**
