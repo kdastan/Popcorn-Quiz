@@ -9,6 +9,7 @@
 import UIKit
 import Firebase
 import FirebaseDatabase
+import FirebaseAuth
 
 struct QuotesList {
     var name: String!
@@ -17,7 +18,7 @@ struct QuotesList {
 
 class Quotes {
 
-    static func fetchQuotes(completion: @escaping ([[String: String]]?) -> Void){
+    static func fetchQuotes(completion: @escaping ([[String: String]]?) -> Void) {
         let ref = Database.database().reference().child("Quotes")
         ref.observeSingleEvent(of: .value, with: { (snapshot) in
             var list: [[String: String]] = [[:]]
@@ -34,5 +35,22 @@ class Quotes {
             completion(list)
         })
     }
+    
+    static func userExistsQuery(curID: String, completion: @escaping (Bool) -> Void) {
+        let ref = Database.database().reference()
+        
+        ref.child("users").observeSingleEvent(of: .value, with: { (snapshot) in
+            
+            if snapshot.hasChild(curID) {
+                print("User doesn't exists")
+                completion(false)
+            } else {
+                completion(true)
+                print("User exists")
+            }
+            
+        })
+    }
+    
     
 }

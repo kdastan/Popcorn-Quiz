@@ -8,6 +8,9 @@
 
 import UIKit
 import EasyPeasy
+import FirebaseAuth
+import Firebase
+import FirebaseDatabase
 
 class TempViewController: UIViewController {
 
@@ -27,10 +30,10 @@ class TempViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        
+        
         setupViews()
         setupConstraints()
-        
     }
     
     func setupViews() {
@@ -59,6 +62,14 @@ class TempViewController: UIViewController {
     }
     
     func playPressed() {
+
+//        let currentId = Auth.auth().currentUser?.uid
+//        
+//        Quotes.userExistsQuery(curID: currentId!) { (result) in
+//            if result == false { print("Doesn't exists") }
+//            
+//            else { self. }
+//        }
         
         navigationController?.pushViewController(GameViewController(), animated: true)
         

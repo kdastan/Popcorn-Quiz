@@ -11,5 +11,7 @@ target 'movie_quotes' do
   pod 'YLProgressBar', '~> 3.10.1'
   pod 'Firebase/Core'
   pod 'Firebase/Database'
+  pod 'Firebase/Auth'
+  pod 'RealmSwift'
 
 end

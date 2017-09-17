@@ -10,6 +10,7 @@ import UIKit
 import EasyPeasy
 import SVProgressHUD
 import YLProgressBar
+import RealmSwift
 
 class GameViewController: UIViewController {
     
@@ -42,14 +43,15 @@ class GameViewController: UIViewController {
         return image
     }()
     
-    
     lazy var label: UILabel = {
         let label = UILabel()
         label.numberOfLines = 0
+        label.font = UIFont(name: "Helvetica", size: 22)
+        label.textAlignment = .center
         label.adjustsFontSizeToFitWidth = true
         return label
     }()
-    
+
     lazy var buttonA: UIButton = {
         let button = UIButton()
         button.backgroundColor = .buttonColor
@@ -146,17 +148,26 @@ class GameViewController: UIViewController {
         return button
     }()
     
-    
     lazy var HUDanimation: UIImageView = {
         let hud = UIImageView()
         hud.image = UIImage(named: "anim")
         return hud
+    }()
+
+    lazy var newRecord: UILabel = {
+        let label = UILabel()
+        label.adjustsFontSizeToFitWidth = true
+        label.font = UIFont(name: "Helvetica", size: 24)
+        label.textColor = .white
+        return label
     }()
     
     override func viewDidLoad() {
         super.viewDidLoad()
         setupViews()
         setupConstraint()
+        
+        print(Realm.Configuration.defaultConfiguration.fileURL!)
         
         startGame()
     }
@@ -175,24 +186,16 @@ class GameViewController: UIViewController {
         }
         
         HUDanimation.isHidden = false
-
         timer1 = Timer.scheduledTimer(timeInterval: 0.1, target: self, selector: #selector(animStart), userInfo: nil, repeats: true)
-        
         gameOverView.isHidden = true
-        
         scoreLabel.text = "0"
-        
         progressBar.setProgress(0, animated: false)
-        
-        //SVProgressHUD.show()
-        
         
         fetchFromFirebase(completion: {(result) in
             self.timer1.invalidate()
             self.HUDanimation.layer.removeAllAnimations()
             self.HUDanimation.isHidden = true
-            //SVProgressHUD.dismiss()
-            
+
             guard let _ = result else {
                 self.networkErrorAlert()
                 return
@@ -207,7 +210,22 @@ class GameViewController: UIViewController {
             self.newQuestionSetup()
             
         })
-
+    }
+    
+    func startNewGame() {
+        
+        gameOverView.isHidden = true
+        
+        scoreLabel.text = "0"
+        progressBar.setProgress(0, animated: false)
+        
+        [self.buttonA, self.buttonB, self.buttonC, self.buttonD].forEach{
+            $0.isEnabled = true
+            $0.backgroundColor = .buttonColor
+        }
+        
+        runTimer()
+        newQuestionSetup()
     }
     
     func setupViews() {
@@ -218,6 +236,7 @@ class GameViewController: UIViewController {
         }
         gameOverView.addSubview(resultLabel)
         gameOverView.addSubview(menuButton)
+        gameOverView.addSubview(newRecord)
         gameOverView.addSubview(playAgainButton)
     }
     
@@ -292,7 +311,7 @@ class GameViewController: UIViewController {
         
         gameOverView <- [
             Width(230),
-            Height(85),
+            Height(125),
             CenterX(0),
             CenterY(10)
         ]
@@ -301,6 +320,11 @@ class GameViewController: UIViewController {
             Top(15),
             CenterX(0),
             Height(20)
+        ]
+        
+        newRecord <- [
+            CenterX(0).to(resultLabel),
+            Top(10).to(resultLabel, .bottom)
         ]
         
         menuButton <- [
@@ -350,14 +374,14 @@ class GameViewController: UIViewController {
     }
     
     func rePlayGame() {
-        list.removeAll()
         answers.removeAll()
         progress = 0.04
         seconds = 28
         i = 0
         score = 0
         
-        startGame()
+//        startGame()
+        startNewGame()
     }
 
     func variantPressed(buttonAnswer: String) {
@@ -400,17 +424,17 @@ class GameViewController: UIViewController {
     //MARK: Question setup
     func newQuestionSetup() {
         answers.removeAll()
+                var countAnswer = 0
+        let randomQuote = Int(arc4random_uniform(199))
         
-        var countAnswer = 0
-        let randomQuote = Int(arc4random_uniform(99))
-        
-        label.text = list[randomQuote]["Quote"]! + list[randomQuote]["Name"]!
+        label.text = list[randomQuote]["Quote"]!
         realAnswer = list[randomQuote]["Name"]!
         
         answers.append(realAnswer)
         
         while countAnswer != 3 {
-            let randomAnswer = Int(arc4random_uniform(99))
+            let randomAnswer = Int(arc4random_uniform(199))
+            
             let answer = list[randomAnswer]["Name"]!
             
             if !answers.contains(answer) {
@@ -440,7 +464,34 @@ class GameViewController: UIViewController {
         
         gameOverView.isHidden = false
         resultLabel.text = "Correct: \(score)"
+        
+        fetchHighScore { (result) in
+            guard let result = result else {
+                Score.highScoreSetter(score: self.score)
+                self.newRecord.text = "New record"
+                return
+            }
+            if result < self.score {
+                Score.highScoreSetter(score: self.score)
+                self.newRecord.text = "New record"
+            } else {
+                self.newRecord.text = "Best result: \(result)"
+            }
+        }
+        
     }
+    
+    //MARK: - Fetches High Score from Realm
+    func fetchHighScore(completion: @escaping (Int?) -> Void) {
+        Score.highScoreGetter { (result) in
+            guard let _ = result else {
+                completion(nil)
+                return
+            }
+            completion(result)
+        }
+    }
+    
     
     func nextQuestion() {
         score += 1
@@ -449,7 +500,6 @@ class GameViewController: UIViewController {
         [buttonA, buttonB, buttonC, buttonD].forEach{
             $0.backgroundColor = .buttonColor
         }
-        
         
         //Reload Questions Here
         i += 1
