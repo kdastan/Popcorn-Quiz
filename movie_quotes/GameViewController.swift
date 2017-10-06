@@ -30,6 +30,8 @@ class GameViewController: UIViewController {
     
     var answers: [String] = []
     var realAnswer = ""
+    
+    var attemptNumber = 3
 
     lazy var imageView: UIImageView = {
         let image = UIImageView()
@@ -162,6 +164,11 @@ class GameViewController: UIViewController {
         return label
     }()
     
+    lazy var attemptsView: Attempts = {
+        let view = Attempts()
+        return view
+    }()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         setupViews()
@@ -218,6 +225,7 @@ class GameViewController: UIViewController {
         
         scoreLabel.text = "0"
         progressBar.setProgress(0, animated: false)
+        attemptsView.label.text = "x \(attemptNumber)"
         
         [self.buttonA, self.buttonB, self.buttonC, self.buttonD].forEach{
             $0.isEnabled = true
@@ -231,7 +239,7 @@ class GameViewController: UIViewController {
     func setupViews() {
         edgesForExtendedLayout = []
         
-        [imageView, questionBackground, wheel, scoreLabel, label, buttonA, buttonB, buttonC, buttonD, progressBar, HUDanimation,gameOverView].forEach{
+        [imageView, questionBackground, wheel, scoreLabel, label, buttonA, buttonB, buttonC, buttonD, progressBar, attemptsView, HUDanimation,gameOverView].forEach{
             view.addSubview($0)
         }
         gameOverView.addSubview(resultLabel)
@@ -346,6 +354,13 @@ class GameViewController: UIViewController {
             Size(64)
         ]
         
+        attemptsView <- [
+            Top(16),
+            Right(16),
+            Width(61),
+            Height(32)
+        ]
+        
         
     }
     
@@ -377,6 +392,7 @@ class GameViewController: UIViewController {
         answers.removeAll()
         progress = 0.04
         seconds = 28
+        attemptNumber = 3
         i = 0
         score = 0
         
@@ -392,14 +408,31 @@ class GameViewController: UIViewController {
             progressBar.setProgress(CGFloat(progress), animated: false)
             nextQuestion()
         } else {
-            
-            [buttonA, buttonB, buttonC, buttonD].forEach{
-                if $0.titleLabel?.text == realAnswer { $0.backgroundColor = .green }
+            attemptNumber -= 1
+            if (attemptNumber == 0) {
+                attemptsView.label.text = "x \(attemptNumber)"
+                finishGame()
+            } else {
+                //
+                progress = 0.04
+                seconds = 28
+                progressBar.setProgress(0, animated: false)
+                //
+                attemptsView.label.text = "x \(attemptNumber)"
             }
             
-            gameOverEffect()
-            print("Not correct")
         }
+    }
+    
+    //MARK: - Game over effect
+    func finishGame() {
+    
+        [buttonA, buttonB, buttonC, buttonD].forEach{
+            if $0.titleLabel?.text == realAnswer { $0.backgroundColor = .green }
+        }
+        
+        gameOverEffect()
+        print("Not correct")
     }
     
     //MARK: Fetch quotes from fb

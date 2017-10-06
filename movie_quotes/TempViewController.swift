@@ -30,14 +30,11 @@ class TempViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        
         setupViews()
         setupConstraints()
     }
     
     func setupViews() {
-        
         self.navigationController?.isNavigationBarHidden = true
         
         edgesForExtendedLayout = []
@@ -59,6 +56,8 @@ class TempViewController: UIViewController {
             Width(127),
             Height(65)
         ]
+        
+        
     }
     
     func playPressed() {
@@ -74,5 +73,5 @@ class TempViewController: UIViewController {
         navigationController?.pushViewController(GameViewController(), animated: true)
         
     }
-
+    
 }
