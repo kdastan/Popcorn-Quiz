@@ -7,8 +7,8 @@ This app was made at nFactorial Incubator 2017.
 ## Installation
 To download and install the application, enter the commands from the bottom in your terminal.
 
-$ git clone https://github.com/kdastan/Movie-Quotes </br>
-$ cd Movie-Quotes </br>
+$ git clone https://github.com/kdastan/Popcorn-Quiz </br>
+$ cd Popcorn-Quiz </br>
 $ open movie_quotes.xcworkspace 
 
 ## Code style
