@@ -1,6 +1,0 @@
-framework module Pods_movie_quotes {
-  umbrella header "Pods-movie_quotes-umbrella.h"
-
-  export *
-  module * { export * }
-}
